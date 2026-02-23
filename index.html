@@ -4,395 +4,54 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>CITRO - Sistema de Gestión | Google</title>
-    
     <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-
+        /* [Mantén todos los estilos CSS originales que ya tenías aquí] */
+        * { margin: 0; padding: 0; box-sizing: border-box; }
         :root {
-            --google-blue: #4285f4;
-            --google-red: #ea4335;
-            --google-yellow: #fbbc04;
-            --google-green: #34a853;
-            --text-primary: #202124;
-            --text-secondary: #5f6368;
-            --border-color: #dadce0;
-            --bg-light: #f8f9fa;
+            --google-blue: #4285f4; --google-red: #ea4335; --google-yellow: #fbbc04; --google-green: #34a853;
+            --text-primary: #202124; --text-secondary: #5f6368; --border-color: #dadce0; --bg-light: #f8f9fa;
         }
-
-        body {
-            font-family: 'Google Sans', 'Segoe UI', Roboto, Arial, sans-serif;
-            color: var(--text-primary);
-            background: var(--bg-light);
-            line-height: 1.6;
-        }
-
-        .container {
-            max-width: 1200px;
-            margin: 0 auto;
-            padding: 0 20px;
-        }
-
-        /* HEADER */
-        header {
-            background: white;
-            box-shadow: 0 1px 2px 0 rgba(60,64,67,0.3);
-            padding: 16px 0;
-            position: sticky;
-            top: 0;
-            z-index: 1000;
-        }
-
-        .header-content {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
-
-        .logo {
-            display: flex;
-            align-items: center;
-            gap: 12px;
-        }
-
-        .logo-icon {
-            width: 40px;
-            height: 40px;
-            background: linear-gradient(135deg, var(--google-blue), var(--google-green));
-            border-radius: 8px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            color: white;
-            font-weight: 700;
-            font-size: 18px;
-        }
-
-        .logo h1 {
-            font-size: 20px;
-            font-weight: 500;
-            color: var(--text-primary);
-        }
-
-        .logo-subtitle {
-            font-size: 12px;
-            color: var(--text-secondary);
-        }
-
-        /* LOGIN CONTAINER */
-        #login-container {
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            min-height: calc(100vh - 80px);
-            padding: 40px 20px;
-        }
-
-        .login-card {
-            background: white;
-            border-radius: 12px;
-            padding: 48px 40px;
-            max-width: 450px;
-            width: 100%;
-            box-shadow: 0 2px 12px rgba(0,0,0,0.08);
-            text-align: center;
-        }
-
-        .login-card h2 {
-            font-size: 28px;
-            margin-bottom: 12px;
-            font-weight: 400;
-        }
-
-        .login-card p {
-            color: var(--text-secondary);
-            margin-bottom: 32px;
-            font-size: 15px;
-        }
-
-        .btn-google-signin {
-            display: inline-flex;
-            align-items: center;
-            justify-content: center;
-            gap: 12px;
-            background: white;
-            border: 1px solid var(--border-color);
-            padding: 12px 24px;
-            border-radius: 8px;
-            font-size: 15px;
-            font-weight: 500;
-            color: var(--text-primary);
-            cursor: pointer;
-            transition: all 0.2s;
-            box-shadow: 0 1px 3px rgba(0,0,0,0.08);
-        }
-
-        .btn-google-signin:hover {
-            box-shadow: 0 2px 8px rgba(0,0,0,0.15);
-            border-color: var(--google-blue);
-        }
-
-        .google-icon {
-            width: 20px;
-            height: 20px;
-        }
-
-        /* MAIN CONTENT */
-        #main-content {
-            display: none;
-            padding: 32px 0;
-        }
-
-        .section {
-            display: none;
-        }
-
-        .section.active {
-            display: block;
-        }
-
-        /* HOME SECTION */
-        #home {
-            display: block;
-        }
-
-        .welcome-banner {
-            background: linear-gradient(135deg, var(--google-blue), var(--google-green));
-            color: white;
-            padding: 48px;
-            border-radius: 12px;
-            margin-bottom: 32px;
-            text-align: center;
-        }
-
-        .welcome-banner h2 {
-            font-size: 32px;
-            font-weight: 400;
-            margin-bottom: 12px;
-        }
-
-        .cards-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-            gap: 24px;
-            margin-top: 32px;
-        }
-
-        .card {
-            background: white;
-            border-radius: 12px;
-            padding: 28px;
-            cursor: pointer;
-            transition: all 0.3s;
-            border: 1px solid var(--border-color);
-        }
-
-        .card:hover {
-            transform: translateY(-4px);
-            box-shadow: 0 8px 24px rgba(0,0,0,0.12);
-        }
-
-        .card-icon {
-            font-size: 48px;
-            margin-bottom: 16px;
-        }
-
-        .card h3 {
-            font-size: 20px;
-            font-weight: 500;
-            margin-bottom: 8px;
-        }
-
-        .card p {
-            color: var(--text-secondary);
-            font-size: 14px;
-        }
-
-        /* FORM SECTION */
-        .form-container {
-            background: white;
-            border-radius: 12px;
-            padding: 32px;
-            max-width: 800px;
-            margin: 0 auto;
-        }
-
-        .form-header {
-            margin-bottom: 32px;
-            padding-bottom: 24px;
-            border-bottom: 1px solid var(--border-color);
-        }
-
-        .form-header h2 {
-            font-size: 28px;
-            font-weight: 400;
-            margin-bottom: 8px;
-        }
-
-        .form-header p {
-            color: var(--text-secondary);
-            font-size: 15px;
-        }
-
-        .form-grid {
-            display: grid;
-            gap: 24px;
-        }
-
-        .form-field label {
-            display: block;
-            font-weight: 500;
-            margin-bottom: 8px;
-            color: var(--text-primary);
-        }
-
-        .form-field input,
-        .form-field select,
-        .form-field textarea {
-            width: 100%;
-            padding: 12px 16px;
-            border: 1px solid var(--border-color);
-            border-radius: 8px;
-            font-size: 15px;
-            font-family: inherit;
-            transition: all 0.2s;
-        }
-
-        .form-field input:focus,
-        .form-field select:focus,
-        .form-field textarea:focus {
-            outline: none;
-            border-color: var(--google-blue);
-            box-shadow: 0 0 0 3px rgba(66, 133, 244, 0.1);
-        }
-
-        .help-text {
-            display: block;
-            margin-top: 6px;
-            font-size: 13px;
-            color: var(--text-secondary);
-        }
-
-        /* BUTTONS */
-        .btn {
-            padding: 12px 24px;
-            border: none;
-            border-radius: 8px;
-            font-size: 15px;
-            font-weight: 500;
-            cursor: pointer;
-            transition: all 0.2s;
-        }
-
-        .btn-primary {
-            background: var(--google-blue);
-            color: white;
-        }
-
-        .btn-primary:hover {
-            background: #1967d2;
-            box-shadow: 0 2px 8px rgba(66, 133, 244, 0.3);
-        }
-
-        .btn-secondary {
-            background: white;
-            color: var(--text-primary);
-            border: 1px solid var(--border-color);
-        }
-
-        .btn-secondary:hover {
-            background: var(--bg-light);
-        }
-
-        .form-actions {
-            display: flex;
-            gap: 12px;
-            justify-content: flex-end;
-            margin-top: 32px;
-            padding-top: 24px;
-            border-top: 1px solid var(--border-color);
-        }
-
-        /* LOADING */
-        #loading {
-            display: none;
-            position: fixed;
-            top: 0;
-            left: 0;
-            right: 0;
-            bottom: 0;
-            background: rgba(255,255,255,0.9);
-            z-index: 9999;
-            align-items: center;
-            justify-content: center;
-        }
-
-        .spinner {
-            width: 48px;
-            height: 48px;
-            border: 4px solid var(--border-color);
-            border-top-color: var(--google-blue);
-            border-radius: 50%;
-            animation: spin 0.8s linear infinite;
-        }
-
-        @keyframes spin {
-            to { transform: rotate(360deg); }
-        }
-
-        /* NOTIFICATIONS */
-        .notification {
-            padding: 16px 20px;
-            border-radius: 8px;
-            background: white;
-            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
-            display: flex;
-            align-items: center;
-            animation: slideIn 0.3s ease-out;
-        }
-
-        @keyframes slideIn {
-            from {
-                transform: translateX(100%);
-                opacity: 0;
-            }
-            to {
-                transform: translateX(0);
-                opacity: 1;
-            }
-        }
-
+        body { font-family: 'Google Sans', 'Segoe UI', Roboto, Arial, sans-serif; color: var(--text-primary); background: var(--bg-light); line-height: 1.6; }
+        .container { max-width: 1200px; margin: 0 auto; padding: 0 20px; }
+        header { background: white; box-shadow: 0 1px 2px 0 rgba(60,64,67,0.3); padding: 16px 0; position: sticky; top: 0; z-index: 1000; }
+        .header-content { display: flex; justify-content: space-between; align-items: center; }
+        .logo { display: flex; align-items: center; gap: 12px; }
+        .logo-icon { width: 40px; height: 40px; background: linear-gradient(135deg, var(--google-blue), var(--google-green)); border-radius: 8px; display: flex; align-items: center; justify-content: center; color: white; font-weight: 700; font-size: 18px; }
+        .logo h1 { font-size: 20px; font-weight: 500; color: var(--text-primary); }
+        .logo-subtitle { font-size: 12px; color: var(--text-secondary); }
+        #login-container { display: flex; align-items: center; justify-content: center; min-height: calc(100vh - 80px); padding: 40px 20px; }
+        .login-card { background: white; border-radius: 12px; padding: 48px 40px; max-width: 450px; width: 100%; box-shadow: 0 2px 12px rgba(0,0,0,0.08); text-align: center; }
+        .btn-google-signin { display: inline-flex; align-items: center; justify-content: center; gap: 12px; background: white; border: 1px solid var(--border-color); padding: 12px 24px; border-radius: 8px; font-size: 15px; font-weight: 500; cursor: pointer; transition: all 0.2s; box-shadow: 0 1px 3px rgba(0,0,0,0.08); }
+        .btn-google-signin:hover { box-shadow: 0 2px 8px rgba(0,0,0,0.15); border-color: var(--google-blue); }
+        .google-icon { width: 20px; height: 20px; }
+        #main-content { display: none; padding: 32px 0; }
+        .section { display: none; }
+        .section.active { display: block; }
+        #home { display: block; }
+        .welcome-banner { background: linear-gradient(135deg, var(--google-blue), var(--google-green)); color: white; padding: 48px; border-radius: 12px; margin-bottom: 32px; text-align: center; }
+        .cards-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 24px; margin-top: 32px; }
+        .card { background: white; border-radius: 12px; padding: 28px; cursor: pointer; transition: all 0.3s; border: 1px solid var(--border-color); }
+        .card:hover { transform: translateY(-4px); box-shadow: 0 8px 24px rgba(0,0,0,0.12); }
+        .card-icon { font-size: 48px; margin-bottom: 16px; }
+        .form-container { background: white; border-radius: 12px; padding: 32px; max-width: 800px; margin: 0 auto; }
+        .form-grid { display: grid; gap: 24px; }
+        .form-field label { display: block; font-weight: 500; margin-bottom: 8px; }
+        .form-field input, .form-field select, .form-field textarea { width: 100%; padding: 12px 16px; border: 1px solid var(--border-color); border-radius: 8px; font-size: 15px; font-family: inherit; }
+        .btn { padding: 12px 24px; border: none; border-radius: 8px; font-size: 15px; font-weight: 500; cursor: pointer; transition: all 0.2s; }
+        .btn-primary { background: var(--google-blue); color: white; }
+        .btn-secondary { background: white; color: var(--text-primary); border: 1px solid var(--border-color); }
+        #loading { display: none; position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(255,255,255,0.9); z-index: 9999; align-items: center; justify-content: center; }
+        .spinner { width: 48px; height: 48px; border: 4px solid var(--border-color); border-top-color: var(--google-blue); border-radius: 50%; animation: spin 0.8s linear infinite; }
+        @keyframes spin { to { transform: rotate(360deg); } }
+        .notification { padding: 16px 20px; border-radius: 8px; background: white; box-shadow: 0 4px 12px rgba(0,0,0,0.15); display: flex; align-items: center; animation: slideIn 0.3s ease-out; }
+        @keyframes slideIn { from { transform: translateX(100%); opacity: 0; } to { transform: translateX(0); opacity: 1; } }
         .notification-success { border-left: 4px solid var(--google-green); }
         .notification-error { border-left: 4px solid var(--google-red); }
         .notification-warning { border-left: 4px solid var(--google-yellow); }
-        .notification-info { border-left: 4px solid var(--google-blue); }
-
-        /* RESPONSIVE */
-        @media (max-width: 768px) {
-            .cards-grid {
-                grid-template-columns: 1fr;
-            }
-
-            .form-container {
-                padding: 24px 20px;
-            }
-
-            .welcome-banner {
-                padding: 32px 24px;
-            }
-
-            .welcome-banner h2 {
-                font-size: 24px;
-            }
-        }
     </style>
 </head>
 <body>
 
-    <!-- HEADER -->
     <header>
         <div class="container">
             <div class="header-content">
@@ -403,17 +62,21 @@
                         <div class="logo-subtitle">Sistema de Gestión</div>
                     </div>
                 </div>
-                <div id="user-info"></div>
+                
+                <div style="display: flex; align-items: center;">
+                    <div id="nav-links" style="display:none; margin-right: 20px; gap: 10px;">
+                        <button onclick="goToHome()" class="btn btn-secondary" style="padding: 8px 16px;">🏠 Inicio</button>
+                        <button onclick="showDashboard()" class="btn btn-primary" id="btn-dashboard" style="padding: 8px 16px;">📊 Dashboard</button>
+                    </div>
+                    <div id="user-info"></div>
+                </div>
             </div>
         </div>
     </header>
 
-    <!-- LOGIN CONTAINER -->
     <div id="login-container">
         <div class="login-card">
-            <div class="logo-icon" style="width: 80px; height: 80px; margin: 0 auto 24px; font-size: 32px;">
-                CT
-            </div>
+            <div class="logo-icon" style="width: 80px; height: 80px; margin: 0 auto 24px; font-size: 32px;">CT</div>
             <h2>Sistema CITRO</h2>
             <p>Gestión de Solicitudes al H. Consejo Técnico<br>Universidad Veracruzana</p>
             <button onclick="signInWithGoogle()" class="btn-google-signin">
@@ -425,90 +88,72 @@
                 </svg>
                 Continuar con Google
             </button>
-            <p style="margin-top: 24px; font-size: 13px;">
-                Solo cuentas @uv.mx
-            </p>
         </div>
     </div>
 
-    <!-- MAIN CONTENT -->
     <div id="main-content">
         <div class="container">
 
-            <!-- HOME SECTION -->
             <section id="home" class="section">
                 <div class="welcome-banner">
                     <h2>Bienvenido al Sistema CITRO</h2>
-                    <p style="font-size: 16px; opacity: 0.95;">Gestión de solicitudes al H. Consejo Técnico</p>
+                    <p>Gestión de solicitudes al H. Consejo Técnico</p>
                 </div>
-
-                <h3 style="margin-bottom: 20px; font-size: 22px; font-weight: 500;">Seleccione el tipo de solicitud:</h3>
-
                 <div class="cards-grid">
-                    <div class="card" onclick="selectTramite('apoyo_academico')">
-                        <div class="card-icon">🎓</div>
-                        <h3>Apoyo Académico</h3>
-                        <p>Congresos, viajes, investigación</p>
-                    </div>
-
-                    <div class="card" onclick="selectTramite('aval_institucional')">
-                        <div class="card-icon">✅</div>
-                        <h3>Aval Institucional</h3>
-                        <p>Respaldo oficial del CITRO</p>
-                    </div>
-
-                    <div class="card" onclick="selectTramite('apoyo_terceros')">
-                        <div class="card-icon">👥</div>
-                        <h3>Apoyo a Terceros</h3>
-                        <p>Apoyo para colaboradores externos</p>
-                    </div>
-
-                    <div class="card" onclick="selectTramite('comite_tutorial')">
-                        <div class="card-icon">📚</div>
-                        <h3>Comité Tutorial</h3>
-                        <p>Modificaciones de comité (posgrado)</p>
-                    </div>
-
-                    <div class="card" onclick="selectTramite('solicitud_libre')">
-                        <div class="card-icon">📝</div>
-                        <h3>Solicitud Libre</h3>
-                        <p>Otros trámites no contemplados</p>
-                    </div>
+                    <div class="card" onclick="selectTramite('apoyo_academico')"><h3>Apoyo Académico</h3></div>
+                    <div class="card" onclick="selectTramite('aval_institucional')"><h3>Aval Institucional</h3></div>
+                    <div class="card" onclick="selectTramite('apoyo_terceros')"><h3>Apoyo a Terceros</h3></div>
+                    <div class="card" onclick="selectTramite('comite_tutorial')"><h3>Comité Tutorial</h3></div>
+                    <div class="card" onclick="selectTramite('solicitud_libre')"><h3>Solicitud Libre</h3></div>
                 </div>
             </section>
 
-            <!-- FORM SECTION -->
             <section id="form-section" class="section">
                 <div class="form-container">
-                    <div class="form-header">
-                        <h2 id="form-title"></h2>
-                        <p id="form-subtitle"></p>
-                    </div>
-
+                    <div class="form-header"><h2 id="form-title"></h2><p id="form-subtitle"></p></div>
                     <form id="solicitud-form" onsubmit="event.preventDefault(); enviarSolicitud();">
                         <div id="dynamic-form"></div>
-
-                        <div class="form-actions">
-                            <button type="button" onclick="goToHome()" class="btn btn-secondary">
-                                Cancelar
-                            </button>
-                            <button type="submit" id="btn-enviar-solicitud" class="btn btn-primary">
-                                Enviar Solicitud
-                            </button>
+                        <div style="display: flex; gap: 12px; justify-content: flex-end; margin-top: 32px;">
+                            <button type="button" onclick="goToHome()" class="btn btn-secondary">Cancelar</button>
+                            <button type="submit" id="btn-enviar-solicitud" class="btn btn-primary">Enviar Solicitud</button>
                         </div>
                     </form>
                 </div>
             </section>
 
+            <section id="dashboard-section" class="section">
+                <div class="welcome-banner" style="padding: 24px; margin-bottom: 24px; display: flex; justify-content: space-between; align-items: center;">
+                    <h2 style="margin:0; font-size: 24px;">📊 Panel de Solicitudes</h2>
+                    <button onclick="loadDashboardData()" class="btn btn-secondary" style="background: white;">🔄 Actualizar</button>
+                </div>
+
+                <div id="dashboard-stats" class="cards-grid" style="margin-bottom: 32px; margin-top: 0;"></div>
+
+                <div class="form-container" style="max-width: 100%;">
+                    <h3 style="margin-bottom: 20px; font-weight: 500;">Registro Histórico</h3>
+                    <div style="overflow-x: auto;">
+                        <table style="width: 100%; border-collapse: collapse; text-align: left;">
+                            <thead>
+                                <tr style="background: #f8f9fa; border-bottom: 2px solid #dadce0;">
+                                    <th style="padding: 12px; color: var(--text-secondary);">Folio</th>
+                                    <th style="padding: 12px; color: var(--text-secondary);">Fecha</th>
+                                    <th style="padding: 12px; color: var(--text-secondary);">Trámite</th>
+                                    <th style="padding: 12px; color: var(--text-secondary);">Solicitante</th>
+                                    <th style="padding: 12px; color: var(--text-secondary);">Estado</th>
+                                    <th style="padding: 12px; color: var(--text-secondary);">Acciones</th>
+                                </tr>
+                            </thead>
+                            <tbody id="solicitudes-body"></tbody>
+                        </table>
+                    </div>
+                </div>
+            </section>
+
         </div>
     </div>
 
-    <!-- LOADING OVERLAY -->
-    <div id="loading">
-        <div class="spinner"></div>
-    </div>
+    <div id="loading"><div class="spinner"></div></div>
 
-    <!-- SCRIPTS -->
     <script src="config-google.js"></script>
     <script src="forms-data.js"></script>
     <script src="google-auth.js"></script>
@@ -517,27 +162,17 @@
     <script src="google-gmail.js"></script>
     <script src="app-google.js"></script>
     
-    <!-- jsPDF para generar PDFs -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
     <script>
-        // Función para generar PDF (simplificada)
         async function generatePDF(formData, folio, tipo) {
             const { jsPDF } = window.jspdf;
             const doc = new jsPDF();
-            
-            doc.setFontSize(18);
-            doc.text('Universidad Veracruzana', 105, 20, { align: 'center' });
-            doc.setFontSize(14);
-            doc.text('Centro de Investigaciones Tropicales', 105, 30, { align: 'center' });
-            
-            doc.setFontSize(12);
-            doc.text(`Folio: ${folio}`, 20, 50);
+            doc.setFontSize(18); doc.text('Universidad Veracruzana', 105, 20, { align: 'center' });
+            doc.setFontSize(14); doc.text('Centro de Investigaciones Tropicales', 105, 30, { align: 'center' });
+            doc.setFontSize(12); doc.text(`Folio: ${folio}`, 20, 50);
             doc.text(`Tipo: ${FORMS_CONFIG[tipo]?.title || tipo}`, 20, 60);
             doc.text(`Fecha: ${new Date().toLocaleString('es-MX')}`, 20, 70);
-            
-            let y = 90;
-            doc.setFontSize(11);
-            
+            let y = 90; doc.setFontSize(11);
             for (const [key, value] of Object.entries(formData)) {
                 if (value && y < 280) {
                     const label = key.replace(/_/g, ' ').toUpperCase();
@@ -545,7 +180,6 @@
                     y += 10;
                 }
             }
-            
             return doc.output('blob');
         }
     </script>
