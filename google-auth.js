@@ -230,23 +230,14 @@ async function signOut() {
 // UI UPDATES
 // ════════════════════════════════════════════════════════════════
 
-/**
- * Actualizar UI después de login
- */
 function updateUIAfterLogin() {
-    // Ocultar login
-    const loginContainer = document.getElementById('login-container');
-    if (loginContainer) {
-        loginContainer.style.display = 'none';
-    }
+    document.getElementById('login-container').style.display = 'none';
+    document.getElementById('main-content').style.display = 'block';
 
-    // Mostrar contenido principal
-    const mainContent = document.getElementById('main-content');
-    if (mainContent) {
-        mainContent.style.display = 'block';
-    }
+    // Mostrar menú de navegación (Dashboard)
+    const navLinks = document.getElementById('nav-links');
+    if (navLinks) navLinks.style.display = 'flex';
 
-    // Actualizar info de usuario
     const userInfo = document.getElementById('user-info');
     if (userInfo) {
         userInfo.innerHTML = `
@@ -261,43 +252,21 @@ function updateUIAfterLogin() {
                     <div style="font-weight: 600; font-size: 14px;">${userState.profile.nombre}</div>
                     <div style="font-size: 12px; color: #605E5C;">${userState.profile.email}</div>
                 </div>
-                <button onclick="signOut()" class="btn btn-secondary" style="margin-left: 12px;">
-                    Cerrar sesión
-                </button>
+                <button onclick="signOut()" class="btn btn-secondary" style="margin-left: 12px; padding: 8px 16px;">Salir</button>
             </div>
         `;
     }
-
-    // Mostrar/ocultar panel admin
-    const adminPanel = document.getElementById('admin-panel-link');
-    if (adminPanel) {
-        adminPanel.style.display = userState.isAdmin ? 'block' : 'none';
-    }
 }
 
-/**
- * Actualizar UI después de logout
- */
 function updateUIAfterLogout() {
-    // Mostrar login
-    const loginContainer = document.getElementById('login-container');
-    if (loginContainer) {
-        loginContainer.style.display = 'flex';
-    }
+    document.getElementById('login-container').style.display = 'flex';
+    document.getElementById('main-content').style.display = 'none';
+    
+    // Ocultar menú de navegación
+    const navLinks = document.getElementById('nav-links');
+    if (navLinks) navLinks.style.display = 'none';
 
-    // Ocultar contenido
-    const mainContent = document.getElementById('main-content');
-    if (mainContent) {
-        mainContent.style.display = 'none';
-    }
-
-    // Limpiar user info
-    const userInfo = document.getElementById('user-info');
-    if (userInfo) {
-        userInfo.innerHTML = '';
-    }
-
-    // Volver a home
+    document.getElementById('user-info').innerHTML = '';
     showSection('home');
 }
 
