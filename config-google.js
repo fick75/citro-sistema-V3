@@ -10,8 +10,8 @@ const CONFIG = {
 
     // ━━━ GOOGLE OAUTH 2.0 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
     google: {
-        clientId: '147189238289-of5eo5pj678jvidq07i38g04hjm136kb.apps.googleusercontent.com',
-        // ↑ CORREGIDO: Quitado el "1" extra del inicio
+        clientId: '147189238289-c2du7shhgvrd1de9koq17gjb6p2e4bvj.apps.googleusercontent.com',
+        // ↑ CORREGIDO: Client ID real de Google Cloud Console
         
         scopes: [
             'https://www.googleapis.com/auth/userinfo.email',
