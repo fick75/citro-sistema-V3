@@ -81,7 +81,7 @@ const CONFIG = {
 
     // ━━━ ADMINISTRADORES ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
     admins: [
-        'jcfaicus@gmail.com',
+        'citroct7@gmail.com',
         'rmenchaca@uv.mx',
         'carlolopezo@uv.mx',
         'ctecnicocitro@uv.mx'
