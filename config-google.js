@@ -7,12 +7,9 @@
  */
 
 const CONFIG = {
-
     // ━━━ GOOGLE OAUTH 2.0 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
     google: {
-        clientId: '147189238289-c2du7shhgvrd1de9koq17gjb6p2e4bvj.apps.googleusercontent.com',
-        // ↑ Client ID real de Google Cloud Console
-        
+        clientId: '1147189238289-of5eo5pj678jvidq07i38g04hjm136kb.apps.googleusercontent.com',
         scopes: [
             'https://www.googleapis.com/auth/userinfo.email',
             'https://www.googleapis.com/auth/userinfo.profile',
@@ -20,9 +17,7 @@ const CONFIG = {
             'https://www.googleapis.com/auth/spreadsheets',
             'https://www.googleapis.com/auth/gmail.send'
         ],
-
         redirectUri: window.location.origin,
-
         discoveryDocs: [
             'https://sheets.googleapis.com/$discovery/rest?version=v4',
             'https://www.googleapis.com/discovery/v1/apis/drive/v3/rest',
@@ -32,7 +27,7 @@ const CONFIG = {
 
     // ━━━ GOOGLE SHEETS (BASE DE DATOS) ━━━━━━━━━━━━━━━━━━━━━━━
     sheets: {
-        spreadsheetId: '1ZbGK8Nfzp4UTtEyyvlXpYiRfVWxVBTNZvxJw9HMpVMA',
+        spreadsheetId: '1ZbGK8Nfzp4UTtEyyvlXpYiRfVWxVBTNZvxJw9HMpVMA', // ID limpio
         sheetName: 'Solicitudes',
         columns: [
             'Folio', 'Fecha', 'Tipo', 'Nombre', 'Email', 'Matricula',
@@ -43,7 +38,7 @@ const CONFIG = {
 
     // ━━━ GOOGLE DRIVE (ALMACENAMIENTO) ━━━━━━━━━━━━━━━━━━━━━━━
     drive: {
-        rootFolderId: 'PONER_FOLDER_ID_AQUI',
+        rootFolderId: 'z5HUCrcTBtBCWmQiMPXw',
         folders: {
             apoyo_academico: '01_Apoyo_Academico',
             aval_institucional: '02_Aval_Institucional',
@@ -57,8 +52,8 @@ const CONFIG = {
     // ━━━ ADMINISTRADORES ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
     admins: [
         'citroct7@gmail.com',
-        'jcfaicus@gmail.com'
-    ];
+        'jcfaicuis@gmail.com'
+    ],
 
     // ━━━ INFORMACIÓN INSTITUCIONAL ━━━━━━━━━━━━━━━━━━━━━━━━━━━
     institucion: {
@@ -82,7 +77,7 @@ const CONFIG = {
     // ━━━ OPCIONES DE SEGURIDAD Y VALIDACIÓN ━━━━━━━━━━━━━━━━━━
     options: {
         soloEmailUV: true,
-        dominioPermitido: 'gmail.com',
+        dominioPermitido: 'uv.mx', // Cambiar a gmail.com si haces pruebas personales
         plazoMinimoDias: 21,
         montoMaximo: 100000,
         requiereJustificacionSi: 50000,
@@ -102,42 +97,30 @@ const CONFIG = {
 
     // ━━━ VERSIÓN ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
     version: {
-        numero: '2.0',
+        numero: '2.5',
         fecha: 'Febrero 2026',
-        nombre: 'Sistema CITRO Google',
+        nombre: 'Sistema CITRO Google - Dashboard Edition',
         plataforma: 'Google Workspace'
     }
 };
 
+// ━━━ HELPER PARA ADMINS ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+function isAdmin(email) {
+    if (!email) return false;
+    return CONFIG.admins.includes(email.toLowerCase().trim());
+}
+
 // ━━━ VALIDACIÓN ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 (function validarConfig() {
     const errores = [];
-    if (CONFIG.google.clientId.includes('TU_CLIENT_ID')) {
-        errores.push('⚠️ Falta configurar Google Client ID');
-    }
-    if (CONFIG.sheets.spreadsheetId.includes('TU_SPREADSHEET')) {
-        errores.push('⚠️ Falta configurar Spreadsheet ID');
-    }
-    if (CONFIG.drive.rootFolderId.includes('TU_FOLDER') || CONFIG.drive.rootFolderId.includes('PONER_FOLDER')) {
-        errores.push('⚠️ Falta configurar carpeta raíz de Drive');
-    }
+    if (CONFIG.google.clientId.includes('TU_CLIENT_ID')) errores.push('⚠️ Falta configurar Google Client ID');
+    if (CONFIG.sheets.spreadsheetId.includes('TU_SPREADSHEET')) errores.push('⚠️ Falta configurar Spreadsheet ID');
+    if (CONFIG.drive.rootFolderId.includes('TU_FOLDER')) errores.push('⚠️ Falta configurar carpeta raíz de Drive');
+    
     if (errores.length > 0) {
         console.error('❌ ERRORES DE CONFIGURACIÓN:');
         errores.forEach(e => console.error(e));
     } else if (CONFIG.options.debug) {
         console.log('✅ Configuración Google validada');
-        console.log('🔐 Client ID:', CONFIG.google.clientId.substring(0, 20) + '...');
-        console.log('📊 Spreadsheet:', CONFIG.sheets.spreadsheetId);
-        console.log('🔒 Solo @gmail.com:', CONFIG.options.soloEmailUV);
     }
 })();
-
-// ━━━ HELPER FUNCTIONS ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-function isAdmin(email) {
-    return CONFIG.admins.includes(email.toLowerCase());
-}
-userState.isAdmin = isAdmin(userState.profile.email);
-function isUVEmail(email) {
-    if (!CONFIG.options.soloEmailUV) return true;
-    return email.toLowerCase().endsWith(`@${CONFIG.options.dominioPermitido}`);
-}
