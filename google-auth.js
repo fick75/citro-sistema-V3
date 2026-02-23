@@ -18,7 +18,15 @@ const userState = {
     tokenClient: null,
     accessToken: null
 };
+function isAdmin(email) {
+    if (!email) return false;
+    return CONFIG.admins.includes(email.toLowerCase().trim());
+}
 
+function isUVEmail(email) {
+    if (!CONFIG.options.soloEmailUV) return true;
+    return email.toLowerCase().endsWith(`@${CONFIG.options.dominioPermitido}`);
+}
 // ════════════════════════════════════════════════════════════════
 // HELPERS DE VALIDACIÓN (AQUÍ ESTÁ LA SOLUCIÓN AL ERROR)
 // ════════════════════════════════════════════════════════════════
