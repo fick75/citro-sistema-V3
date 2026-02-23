@@ -76,7 +76,7 @@ const CONFIG = {
 
     // ━━━ OPCIONES DE SEGURIDAD Y VALIDACIÓN ━━━━━━━━━━━━━━━━━━
     options: {
-        soloEmailUV: true,
+        soloEmailUV: false,
         dominioPermitido: 'uv.mx', // Cambiar a gmail.com si haces pruebas personales
         plazoMinimoDias: 21,
         montoMaximo: 100000,
@@ -109,7 +109,17 @@ function isAdmin(email) {
     if (!email) return false;
     return CONFIG.admins.includes(email.toLowerCase().trim());
 }
+// ━━━ HELPER PARA ADMINS ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+function isAdmin(email) {
+    if (!email) return false;
+    return CONFIG.admins.includes(email.toLowerCase().trim());
+}
 
+// ━━━ HELPER PARA VALIDAR DOMINIO UV ━━━━━━━━━━━━━━━━━━━━━━━━━
+function isUVEmail(email) {
+    if (!CONFIG.options.soloEmailUV) return true;
+    return email.toLowerCase().endsWith(`@${CONFIG.options.dominioPermitido}`);
+}
 // ━━━ VALIDACIÓN ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 (function validarConfig() {
     const errores = [];
