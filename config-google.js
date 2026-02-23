@@ -92,7 +92,7 @@ const CONFIG = {
         nombre:      'Centro de Investigaciones Tropicales',
         nombreCorto: 'CITRO',
         universidad: 'Universidad Veracruzana',
-        email:       'ctecnicocitro@uv.mx',
+        email:       'citroct7@gmail.com',
         telefono:    '228-842-1800',
         direccion:   'Xalapa, Veracruz, México',
         sitioWeb:    'https://www.uv.mx/citro'
@@ -100,7 +100,7 @@ const CONFIG = {
 
     // ━━━ CONFIGURACIÓN DE CORREOS ━━━━━━━━━━━━━━━━━━━━━━━━━━━━
     email: {
-        adminEmail: 'ctecnicocitro@uv.mx',
+        adminEmail: 'citroct7@gmail.com',
         enviarConfirmacion: true,
         ccAdminEnConfirmacion: true,
         firmaEmail: 'H. Consejo Técnico del CITRO<br>Universidad Veracruzana'
