@@ -1,339 +1,143 @@
 /**
  * ═══════════════════════════════════════════════════════════════
- * CITRO — Autenticación Google OAuth 2.0
- * Login con Google (@uv.mx)
+ * CITRO — Configuración Google
+ * Sistema 100% Google Workspace
+ * Universidad Veracruzana
  * ═══════════════════════════════════════════════════════════════
  */
 
-// Estado global del usuario
-const userState = {
-    isLoggedIn: false,
-    isAdmin: false,
-    profile: {
-        email: '',
-        nombre: '',
-        foto: '',
-        googleId: ''
+const CONFIG = {
+
+    // ━━━ GOOGLE OAUTH 2.0 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+    google: {
+        clientId: '147189238289-c2du7shhgvrd1de9koq17gjb6p2e4bvj.apps.googleusercontent.com',
+        // ↑ Client ID real de Google Cloud Console
+        
+        scopes: [
+            'https://www.googleapis.com/auth/userinfo.email',
+            'https://www.googleapis.com/auth/userinfo.profile',
+            'https://www.googleapis.com/auth/drive.file',
+            'https://www.googleapis.com/auth/spreadsheets',
+            'https://www.googleapis.com/auth/gmail.send'
+        ],
+
+        redirectUri: window.location.origin,
+
+        discoveryDocs: [
+            'https://sheets.googleapis.com/$discovery/rest?version=v4',
+            'https://www.googleapis.com/discovery/v1/apis/drive/v3/rest',
+            'https://www.googleapis.com/discovery/v1/apis/gmail/v1/rest'
+        ]
     },
-    tokenClient: null,
-    accessToken: null
+
+    // ━━━ GOOGLE SHEETS (BASE DE DATOS) ━━━━━━━━━━━━━━━━━━━━━━━
+    sheets: {
+        spreadsheetId: '1ZbGK8Nfzp4UTtEyyvlXpYiRfVWxVBTNZvxJw9HMpVMA',
+        sheetName: 'Solicitudes',
+        columns: [
+            'Folio', 'Fecha', 'Tipo', 'Nombre', 'Email', 'Matricula',
+            'Monto', 'Estado', 'PDF_URL', 'PDF_ID', 'Datos_JSON',
+            'Notas_CT', 'Usuario_Google', 'Timestamp'
+        ]
+    },
+
+    // ━━━ GOOGLE DRIVE (ALMACENAMIENTO) ━━━━━━━━━━━━━━━━━━━━━━━
+    drive: {
+        rootFolderId: 'PONER_FOLDER_ID_AQUI',
+        folders: {
+            apoyo_academico: '01_Apoyo_Academico',
+            aval_institucional: '02_Aval_Institucional',
+            apoyo_terceros: '03_Apoyo_Terceros',
+            comite_tutorial: '04_Comite_Tutorial',
+            solicitud_libre: '05_Solicitud_Libre'
+        },
+        folderIds: {}
+    },
+
+    // ━━━ ADMINISTRADORES ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+    admins: [
+        'citroct7@gmail.com',
+        'jcfaicus@gmail.com'
+    ],
+
+    // ━━━ INFORMACIÓN INSTITUCIONAL ━━━━━━━━━━━━━━━━━━━━━━━━━━━
+    institucion: {
+        nombre: 'Centro de Investigaciones Tropicales',
+        nombreCorto: 'CITRO',
+        universidad: 'Universidad Veracruzana',
+        email: 'ctecnicocitro@uv.mx',
+        telefono: '228-842-1800',
+        direccion: 'Xalapa, Veracruz, México',
+        sitioWeb: 'https://www.uv.mx/citro'
+    },
+
+    // ━━━ CONFIGURACIÓN DE CORREOS ━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+    email: {
+        adminEmail: 'ctecnicocitro@uv.mx',
+        enviarConfirmacion: true,
+        ccAdminEnConfirmacion: true,
+        firmaEmail: 'H. Consejo Técnico del CITRO<br>Universidad Veracruzana'
+    },
+
+    // ━━━ OPCIONES DE SEGURIDAD Y VALIDACIÓN ━━━━━━━━━━━━━━━━━━
+    options: {
+        soloEmailUV: true,
+        dominioPermitido: 'gmail.com',
+        plazoMinimoDias: 21,
+        montoMaximo: 100000,
+        requiereJustificacionSi: 50000,
+        debug: true
+    },
+
+    // ━━━ CONFIGURACIÓN DE FORMULARIOS ━━━━━━━━━━━━━━━━━━━━━━━━
+    formularios: {
+        formatoFolio: {
+            apoyo_academico: 'AAC',
+            aval_institucional: 'AVI',
+            apoyo_terceros: 'TER',
+            comite_tutorial: 'CMT',
+            solicitud_libre: 'LIB'
+        }
+    },
+
+    // ━━━ VERSIÓN ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+    version: {
+        numero: '2.0',
+        fecha: 'Febrero 2026',
+        nombre: 'Sistema CITRO Google',
+        plataforma: 'Google Workspace'
+    }
 };
 
-// ════════════════════════════════════════════════════════════════
-// INICIALIZACIÓN
-// ════════════════════════════════════════════════════════════════
+// ━━━ VALIDACIÓN ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+(function validarConfig() {
+    const errores = [];
+    if (CONFIG.google.clientId.includes('TU_CLIENT_ID')) {
+        errores.push('⚠️ Falta configurar Google Client ID');
+    }
+    if (CONFIG.sheets.spreadsheetId.includes('TU_SPREADSHEET')) {
+        errores.push('⚠️ Falta configurar Spreadsheet ID');
+    }
+    if (CONFIG.drive.rootFolderId.includes('TU_FOLDER') || CONFIG.drive.rootFolderId.includes('PONER_FOLDER')) {
+        errores.push('⚠️ Falta configurar carpeta raíz de Drive');
+    }
+    if (errores.length > 0) {
+        console.error('❌ ERRORES DE CONFIGURACIÓN:');
+        errores.forEach(e => console.error(e));
+    } else if (CONFIG.options.debug) {
+        console.log('✅ Configuración Google validada');
+        console.log('🔐 Client ID:', CONFIG.google.clientId.substring(0, 20) + '...');
+        console.log('📊 Spreadsheet:', CONFIG.sheets.spreadsheetId);
+        console.log('🔒 Solo @gmail.com:', CONFIG.options.soloEmailUV);
+    }
+})();
 
-/**
- * Cargar Google API
- */
-function loadGoogleAPI() {
-    return new Promise((resolve, reject) => {
-        const script = document.createElement('script');
-        script.src = 'https://apis.google.com/js/api.js';
-        script.onload = () => {
-            gapi.load('client', () => {
-                initGoogleClient().then(resolve).catch(reject);
-            });
-        };
-        script.onerror = reject;
-        document.head.appendChild(script);
-    });
+// ━━━ HELPER FUNCTIONS ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+function isAdmin(email) {
+    return CONFIG.admins.includes(email.toLowerCase());
 }
 
-/**
- * Cargar Google Identity Services
- */
-function loadGoogleIdentity() {
-    return new Promise((resolve, reject) => {
-        const script = document.createElement('script');
-        script.src = 'https://accounts.google.com/gsi/client';
-        script.onload = resolve;
-        script.onerror = reject;
-        document.head.appendChild(script);
-    });
-}
-
-/**
- * Inicializar Google API Client
- */
-async function initGoogleClient() {
-    try {
-        await gapi.client.init({
-            apiKey: CONFIG.google.apiKey,
-            discoveryDocs: CONFIG.google.discoveryDocs
-        });
-
-        if (CONFIG.options.debug) {
-            console.log('✅ Google API Client inicializado');
-        }
-    } catch (error) {
-        console.error('❌ Error al inicializar Google API:', error);
-        throw error;
-    }
-}
-
-/**
- * Inicializar Token Client (OAuth 2.0)
- */
-function initTokenClient() {
-    userState.tokenClient = google.accounts.oauth2.initTokenClient({
-        client_id: CONFIG.google.clientId,
-        scope: CONFIG.google.scopes.join(' '),
-        callback: handleAuthCallback
-    });
-
-    if (CONFIG.options.debug) {
-        console.log('✅ Token Client inicializado');
-    }
-}
-
-// ════════════════════════════════════════════════════════════════
-// LOGIN Y LOGOUT
-// ════════════════════════════════════════════════════════════════
-
-/**
- * Iniciar sesión con Google
- */
-async function signInWithGoogle() {
-    try {
-        if (CONFIG.options.debug) {
-            console.log('🔐 Iniciando login con Google...');
-        }
-
-        // Solicitar token de acceso
-        userState.tokenClient.requestAccessToken({ prompt: 'consent' });
-
-    } catch (error) {
-        console.error('❌ Error en login:', error);
-        showNotification('Error al iniciar sesión: ' + error.message, 'error');
-    }
-}
-
-/**
- * Callback después de autenticación
- */
-async function handleAuthCallback(response) {
-    try {
-        if (response.error) {
-            throw new Error(response.error);
-        }
-
-        // Guardar token
-        userState.accessToken = response.access_token;
-        gapi.client.setToken({ access_token: response.access_token });
-
-        // Obtener perfil del usuario
-        await getUserProfile();
-
-        // Validar dominio UV
-	if (CONFIG.options.soloEmailUV && !isUVEmail(userState.profile.email)) {
-   	 await signOut();
-            showNotification(
-                `Solo se permiten cuentas @${CONFIG.options.dominioPermitido}`,
-                'error'
-            );
-            return;
-        }
-
-        // Verificar si es admin
-        userState.isAdmin = isAdmin(userState.profile.email);
-
-        // Actualizar UI
-        userState.isLoggedIn = true;
-        updateUIAfterLogin();
-
-        if (CONFIG.options.debug) {
-            console.log('✅ Login exitoso');
-            console.log('👤 Usuario:', userState.profile.email);
-            console.log('👑 Admin:', userState.isAdmin);
-        }
-
-        showNotification('Bienvenido, ' + userState.profile.nombre, 'success');
-
-    } catch (error) {
-        console.error('❌ Error en callback:', error);
-        showNotification('Error al procesar login: ' + error.message, 'error');
-    }
-}
-
-/**
- * Obtener perfil del usuario
- */
-async function getUserProfile() {
-    try {
-        const response = await fetch('https://www.googleapis.com/oauth2/v2/userinfo', {
-            headers: { Authorization: `Bearer ${userState.accessToken}` }
-        });
-
-        if (!response.ok) {
-            throw new Error('Error al obtener perfil');
-        }
-
-        const data = await response.json();
-
-        userState.profile = {
-            email: data.email,
-            nombre: data.name || data.email.split('@')[0],
-            foto: data.picture || '',
-            googleId: data.id
-        };
-
-    } catch (error) {
-        console.error('❌ Error al obtener perfil:', error);
-        throw error;
-    }
-}
-
-/**
- * Cerrar sesión
- */
-async function signOut() {
-    try {
-        // Revocar token
-        if (userState.accessToken) {
-            google.accounts.oauth2.revoke(userState.accessToken, () => {
-                if (CONFIG.options.debug) {
-                    console.log('🔓 Token revocado');
-                }
-            });
-        }
-
-        // Limpiar estado
-        userState.isLoggedIn = false;
-        userState.isAdmin = false;
-        userState.accessToken = null;
-        userState.profile = {
-            email: '',
-            nombre: '',
-            foto: '',
-            googleId: ''
-        };
-
-        // Limpiar cliente
-        gapi.client.setToken(null);
-
-        // Actualizar UI
-        updateUIAfterLogout();
-
-        if (CONFIG.options.debug) {
-            console.log('👋 Sesión cerrada');
-        }
-
-        showNotification('Sesión cerrada', 'info');
-
-    } catch (error) {
-        console.error('❌ Error al cerrar sesión:', error);
-    }
-}
-
-// ════════════════════════════════════════════════════════════════
-// UI UPDATES
-// ════════════════════════════════════════════════════════════════
-
-/**
- * Actualizar UI después de login
- */
-function updateUIAfterLogin() {
-    // Ocultar login
-    const loginContainer = document.getElementById('login-container');
-    if (loginContainer) {
-        loginContainer.style.display = 'none';
-    }
-
-    // Mostrar contenido principal
-    const mainContent = document.getElementById('main-content');
-    if (mainContent) {
-        mainContent.style.display = 'block';
-    }
-
-    // Actualizar info de usuario
-    const userInfo = document.getElementById('user-info');
-    if (userInfo) {
-        userInfo.innerHTML = `
-            <div style="display: flex; align-items: center; gap: 12px;">
-                ${userState.profile.foto ? 
-                    `<img src="${userState.profile.foto}" alt="Foto" style="width: 32px; height: 32px; border-radius: 50%;">` : 
-                    `<div style="width: 32px; height: 32px; border-radius: 50%; background: #0078D4; display: flex; align-items: center; justify-content: center; color: white; font-weight: 600;">
-                        ${userState.profile.nombre.charAt(0).toUpperCase()}
-                    </div>`
-                }
-                <div>
-                    <div style="font-weight: 600; font-size: 14px;">${userState.profile.nombre}</div>
-                    <div style="font-size: 12px; color: #605E5C;">${userState.profile.email}</div>
-                </div>
-                <button onclick="signOut()" class="btn btn-secondary" style="margin-left: 12px;">
-                    Cerrar sesión
-                </button>
-            </div>
-        `;
-    }
-
-    // Mostrar/ocultar panel admin
-    const adminPanel = document.getElementById('admin-panel-link');
-    if (adminPanel) {
-        adminPanel.style.display = userState.isAdmin ? 'block' : 'none';
-    }
-}
-
-/**
- * Actualizar UI después de logout
- */
-function updateUIAfterLogout() {
-    // Mostrar login
-    const loginContainer = document.getElementById('login-container');
-    if (loginContainer) {
-        loginContainer.style.display = 'flex';
-    }
-
-    // Ocultar contenido
-    const mainContent = document.getElementById('main-content');
-    if (mainContent) {
-        mainContent.style.display = 'none';
-    }
-
-    // Limpiar user info
-    const userInfo = document.getElementById('user-info');
-    if (userInfo) {
-        userInfo.innerHTML = '';
-    }
-
-    // Volver a home
-    showSection('home');
-}
-
-// ════════════════════════════════════════════════════════════════
-// INICIALIZACIÓN AL CARGAR PÁGINA
-// ════════════════════════════════════════════════════════════════
-
-window.addEventListener('DOMContentLoaded', async () => {
-    try {
-        if (CONFIG.options.debug) {
-            console.log('🚀 Iniciando sistema CITRO Google...');
-        }
-
-        // Cargar APIs de Google
-        await Promise.all([
-            loadGoogleAPI(),
-            loadGoogleIdentity()
-        ]);
-
-        // Inicializar token client
-        initTokenClient();
-
-        if (CONFIG.options.debug) {
-            console.log('✅ Sistema listo');
-        }
-
-    } catch (error) {
-        console.error('❌ Error al inicializar:', error);
-        showNotification('Error al cargar el sistema: ' + error.message, 'error');
-    }
-});
-
-// ════════════════════════════════════════════════════════════════
-// LOG
-// ════════════════════════════════════════════════════════════════
-
-if (CONFIG?.options?.debug) {
-    console.log('📦 google-auth.js cargado');
+function isUVEmail(email) {
+    if (!CONFIG.options.soloEmailUV) return true;
+    return email.toLowerCase().endsWith(`@${CONFIG.options.dominioPermitido}`);
 }
