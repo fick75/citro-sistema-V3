@@ -20,12 +20,23 @@ const userState = {
 };
 
 // ════════════════════════════════════════════════════════════════
+// HELPERS DE VALIDACIÓN (AQUÍ ESTÁ LA SOLUCIÓN AL ERROR)
+// ════════════════════════════════════════════════════════════════
+
+function isAdmin(email) {
+    if (!email) return false;
+    return CONFIG.admins.includes(email.toLowerCase().trim());
+}
+
+function isUVEmail(email) {
+    if (!CONFIG.options.soloEmailUV) return true; // Si está en false, deja pasar Gmail
+    return email.toLowerCase().endsWith(`@${CONFIG.options.dominioPermitido}`);
+}
+
+// ════════════════════════════════════════════════════════════════
 // INICIALIZACIÓN
 // ════════════════════════════════════════════════════════════════
 
-/**
- * Cargar Google API
- */
 function loadGoogleAPI() {
     return new Promise((resolve, reject) => {
         const script = document.createElement('script');
@@ -40,9 +51,6 @@ function loadGoogleAPI() {
     });
 }
 
-/**
- * Cargar Google Identity Services
- */
 function loadGoogleIdentity() {
     return new Promise((resolve, reject) => {
         const script = document.createElement('script');
@@ -53,92 +61,61 @@ function loadGoogleIdentity() {
     });
 }
 
-/**
- * Inicializar Google API Client
- */
 async function initGoogleClient() {
     try {
         await gapi.client.init({
             apiKey: CONFIG.google.apiKey,
             discoveryDocs: CONFIG.google.discoveryDocs
         });
-
-        if (CONFIG.options.debug) {
-            console.log('✅ Google API Client inicializado');
-        }
+        if (CONFIG.options.debug) console.log('✅ Google API Client inicializado');
     } catch (error) {
         console.error('❌ Error al inicializar Google API:', error);
         throw error;
     }
 }
 
-/**
- * Inicializar Token Client (OAuth 2.0)
- */
 function initTokenClient() {
     userState.tokenClient = google.accounts.oauth2.initTokenClient({
         client_id: CONFIG.google.clientId,
         scope: CONFIG.google.scopes.join(' '),
         callback: handleAuthCallback
     });
-
-    if (CONFIG.options.debug) {
-        console.log('✅ Token Client inicializado');
-    }
+    if (CONFIG.options.debug) console.log('✅ Token Client inicializado');
 }
 
 // ════════════════════════════════════════════════════════════════
 // LOGIN Y LOGOUT
 // ════════════════════════════════════════════════════════════════
 
-/**
- * Iniciar sesión con Google
- */
 async function signInWithGoogle() {
     try {
-        if (CONFIG.options.debug) {
-            console.log('🔐 Iniciando login con Google...');
-        }
-
-        // Solicitar token de acceso
+        if (CONFIG.options.debug) console.log('🔐 Iniciando login con Google...');
         userState.tokenClient.requestAccessToken({ prompt: 'consent' });
-
     } catch (error) {
         console.error('❌ Error en login:', error);
         showNotification('Error al iniciar sesión: ' + error.message, 'error');
     }
 }
 
-/**
- * Callback después de autenticación
- */
 async function handleAuthCallback(response) {
     try {
-        if (response.error) {
-            throw new Error(response.error);
-        }
+        if (response.error) throw new Error(response.error);
 
-        // Guardar token
         userState.accessToken = response.access_token;
         gapi.client.setToken({ access_token: response.access_token });
 
-        // Obtener perfil del usuario
         await getUserProfile();
 
-        // Validar dominio (solo si está configurado)
+        // Validación de dominio corregida
         if (CONFIG.options.soloEmailUV && !isUVEmail(userState.profile.email)) {
             await signOut();
-            showNotification(
-                `Solo se permiten cuentas @${CONFIG.options.dominioPermitido}`,
-                'error'
-            );
+            showNotification(`Solo se permiten cuentas @${CONFIG.options.dominioPermitido}`, 'error');
             return;
         }
 
-        // Verificar si es admin
+        // Aquí es donde marcaba el error, ahora ya encontrará la función arriba
         userState.isAdmin = isAdmin(userState.profile.email);
 
-        // Actualizar UI
         userState.isLoggedIn = true;
         updateUIAfterLogin();
 
@@ -156,19 +133,12 @@ async function handleAuthCallback(response) {
     }
 }
 
-/**
- * Obtener perfil del usuario
- */
 async function getUserProfile() {
     try {
         const response = await fetch('https://www.googleapis.com/oauth2/v2/userinfo', {
             headers: { Authorization: `Bearer ${userState.accessToken}` }
         });
-
-        if (!response.ok) {
-            throw new Error('Error al obtener perfil');
-        }
-
+        if (!response.ok) throw new Error('Error al obtener perfil');
         const data = await response.json();
 
         userState.profile = {
@@ -177,64 +147,41 @@ async function getUserProfile() {
             foto: data.picture || '',
             googleId: data.id
         };
-
     } catch (error) {
         console.error('❌ Error al obtener perfil:', error);
         throw error;
     }
 }
 
-/**
- * Cerrar sesión
- */
 async function signOut() {
     try {
-        // Revocar token
         if (userState.accessToken) {
             google.accounts.oauth2.revoke(userState.accessToken, () => {
-                if (CONFIG.options.debug) {
-                    console.log('🔓 Token revocado');
-                }
+                if (CONFIG.options.debug) console.log('🔓 Token revocado');
             });
         }
 
-        // Limpiar estado
         userState.isLoggedIn = false;
         userState.isAdmin = false;
         userState.accessToken = null;
-        userState.profile = {
-            email: '',
-            nombre: '',
-            foto: '',
-            googleId: ''
-        };
+        userState.profile = { email: '', nombre: '', foto: '', googleId: '' };
 
-        // Limpiar cliente
         gapi.client.setToken(null);
-
-        // Actualizar UI
         updateUIAfterLogout();
-
-        if (CONFIG.options.debug) {
-            console.log('👋 Sesión cerrada');
-        }
-
         showNotification('Sesión cerrada', 'info');
-
     } catch (error) {
         console.error('❌ Error al cerrar sesión:', error);
     }
 }
 
 // ════════════════════════════════════════════════════════════════
-// UI UPDATES
+// UI UPDATES (CON DASHBOARD Y MENÚ)
 // ════════════════════════════════════════════════════════════════
 
 function updateUIAfterLogin() {
     document.getElementById('login-container').style.display = 'none';
     document.getElementById('main-content').style.display = 'block';
 
-    // Mostrar menú de navegación (Dashboard)
     const navLinks = document.getElementById('nav-links');
     if (navLinks) navLinks.style.display = 'flex';
 
@@ -261,12 +208,13 @@ function updateUIAfterLogin() {
 function updateUIAfterLogout() {
     document.getElementById('login-container').style.display = 'flex';
     document.getElementById('main-content').style.display = 'none';
-    
-    // Ocultar menú de navegación
+
     const navLinks = document.getElementById('nav-links');
     if (navLinks) navLinks.style.display = 'none';
 
-    document.getElementById('user-info').innerHTML = '';
+    const userInfo = document.getElementById('user-info');
+    if (userInfo) userInfo.innerHTML = '';
+    
     showSection('home');
 }
 
@@ -276,33 +224,12 @@ function updateUIAfterLogout() {
 
 window.addEventListener('DOMContentLoaded', async () => {
     try {
-        if (CONFIG.options.debug) {
-            console.log('🚀 Iniciando sistema CITRO Google...');
-        }
-
-        // Cargar APIs de Google
-        await Promise.all([
-            loadGoogleAPI(),
-            loadGoogleIdentity()
-        ]);
-
-        // Inicializar token client
+        if (CONFIG.options.debug) console.log('🚀 Iniciando sistema CITRO Google...');
+        await Promise.all([ loadGoogleAPI(), loadGoogleIdentity() ]);
         initTokenClient();
-
-        if (CONFIG.options.debug) {
-            console.log('✅ Sistema listo');
-        }
-
+        if (CONFIG.options.debug) console.log('✅ Sistema listo');
     } catch (error) {
         console.error('❌ Error al inicializar:', error);
         showNotification('Error al cargar el sistema: ' + error.message, 'error');
     }
 });
-
-// ════════════════════════════════════════════════════════════════
-// LOG
-// ════════════════════════════════════════════════════════════════
-
-if (CONFIG?.options?.debug) {
-    console.log('📦 google-auth.js cargado');
-}
