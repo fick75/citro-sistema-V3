@@ -10,9 +10,9 @@ const CONFIG = {
 
     // ━━━ GOOGLE OAUTH 2.0 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
     google: {
-        clientId: '1147189238289-of5eo5pj678jvidq07i38g04hjm136kb.apps.googleusercontent.com',
-        // Obtener en: console.cloud.google.com
-
+        clientId: '147189238289-of5eo5pj678jvidq07i38g04hjm136kb.apps.googleusercontent.com',
+        // ↑ CORREGIDO: Quitado el "1" extra del inicio
+        
         scopes: [
             'https://www.googleapis.com/auth/userinfo.email',
             'https://www.googleapis.com/auth/userinfo.profile',
@@ -21,10 +21,8 @@ const CONFIG = {
             'https://www.googleapis.com/auth/gmail.send'
         ],
 
-        // URLs permitidas
         redirectUri: window.location.origin,
 
-        // Discovery docs
         discoveryDocs: [
             'https://sheets.googleapis.com/$discovery/rest?version=v4',
             'https://www.googleapis.com/discovery/v1/apis/drive/v3/rest',
@@ -34,14 +32,11 @@ const CONFIG = {
 
     // ━━━ GOOGLE SHEETS (BASE DE DATOS) ━━━━━━━━━━━━━━━━━━━━━━━
     sheets: {
-        // ID del spreadsheet (crear manualmente primero)
-        spreadsheetId: '1ZbGK8Nfzp4UTtEyyvlXpYiRfVWxVBTNZvxJw9HMpVMA/edit?gid=0#gid=0',
-        // Ejemplo: 1BxiMVs0XRA5nFMdKvBdBZjgmUUqptlbs74OgvE2upms
-
-        // Nombre de la hoja
+        spreadsheetId: '1ZbGK8Nfzp4UTtEyyvlXpYiRfVWxVBTNZvxJw9HMpVMA',
+        // ↑ CORREGIDO: Solo el ID, sin /edit ni #gid
+        
         sheetName: 'Solicitudes',
 
-        // Columnas (A-N)
         columns: [
             'Folio',              // A
             'Fecha',              // B
@@ -62,11 +57,12 @@ const CONFIG = {
 
     // ━━━ GOOGLE DRIVE (ALMACENAMIENTO) ━━━━━━━━━━━━━━━━━━━━━━━
     drive: {
-        // ID de la carpeta raíz (crear manualmente primero)
-        rootFolderId: 'z5HUCrcTBtBCWmQiMPXw',
-        // Ejemplo: 1dyUEebJaFnWa3Z4n0BFMVAXQ7mfUH11g
-
-        // Nombres de carpetas por tipo
+        // ⚠️ IMPORTANTE: Obtener el ID correcto de Google Drive
+        // Abrir la carpeta en Drive y copiar el ID de la URL
+        rootFolderId: 'PONER_FOLDER_ID_AQUI',
+        // Ejemplo: https://drive.google.com/drive/folders/1dyUEebJ...
+        //                                              ↑ Copiar este ID
+        
         folders: {
             apoyo_academico: '01_Apoyo_Academico',
             aval_institucional: '02_Aval_Institucional',
@@ -75,64 +71,63 @@ const CONFIG = {
             solicitud_libre: '05_Solicitud_Libre'
         },
 
-        // IDs de carpetas (se llenan automáticamente)
         folderIds: {}
     },
 
     // ━━━ ADMINISTRADORES ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
     admins: [
-        cx
         'citroct7@gmail.com',
         'jcfaicus@gmail.com'
-
+    ],
+    // ↑ CORREGIDO: Quitado "cx", cerrado el array correctamente
 
     // ━━━ INFORMACIÓN INSTITUCIONAL ━━━━━━━━━━━━━━━━━━━━━━━━━━━
     institucion: {
-            nombre: 'Centro de Investigaciones Tropicales',
-            nombreCorto: 'CITRO',
-            universidad: 'Universidad Veracruzana',
-            email: 'ctecnicocitro@uv.mx',
-            telefono: '228-842-1800',
-            direccion: 'Xalapa, Veracruz, México',
-            sitioWeb: 'https://www.uv.mx/citro'
-        },
+        nombre: 'Centro de Investigaciones Tropicales',
+        nombreCorto: 'CITRO',
+        universidad: 'Universidad Veracruzana',
+        email: 'ctecnicocitro@uv.mx',
+        telefono: '228-842-1800',
+        direccion: 'Xalapa, Veracruz, México',
+        sitioWeb: 'https://www.uv.mx/citro'
+    },
 
-        // ━━━ CONFIGURACIÓN DE CORREOS ━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-        email: {
-            adminEmail: 'ctecnicocitro@uv.mx',
-            enviarConfirmacion: true,
-            ccAdminEnConfirmacion: true,
-            firmaEmail: 'H. Consejo Técnico del CITRO<br>Universidad Veracruzana'
-        },
+    // ━━━ CONFIGURACIÓN DE CORREOS ━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+    email: {
+        adminEmail: 'ctecnicocitro@uv.mx',
+        enviarConfirmacion: true,
+        ccAdminEnConfirmacion: true,
+        firmaEmail: 'H. Consejo Técnico del CITRO<br>Universidad Veracruzana'
+    },
 
-        // ━━━ OPCIONES DE SEGURIDAD Y VALIDACIÓN ━━━━━━━━━━━━━━━━━━
-        options: {
-            soloEmailUV: true,
-            dominioPermitido: 'uv.mx',
-            plazoMinimoDias: 21,
-            montoMaximo: 100000,
-            requiereJustificacionSi: 50000,
-            debug: true
-        },
+    // ━━━ OPCIONES DE SEGURIDAD Y VALIDACIÓN ━━━━━━━━━━━━━━━━━━
+    options: {
+        soloEmailUV: false,  // false = permite cualquier Google
+        dominioPermitido: '',  // Vacío = sin restricción
+        plazoMinimoDias: 21,
+        montoMaximo: 100000,
+        requiereJustificacionSi: 50000,
+        debug: true
+    },
 
-        // ━━━ CONFIGURACIÓN DE FORMULARIOS ━━━━━━━━━━━━━━━━━━━━━━━━
-        formularios: {
-            formatoFolio: {
-                apoyo_academico: 'AAC',
-                aval_institucional: 'AVI',
-                apoyo_terceros: 'TER',
-                comite_tutorial: 'CMT',
-                solicitud_libre: 'LIB'
-            }
-        },
-
-        // ━━━ VERSIÓN ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-        version: {
-            numero: '2.0',
-            fecha: 'Febrero 2026',
-            nombre: 'Sistema CITRO Google',
-            plataforma: 'Google Workspace'
+    // ━━━ CONFIGURACIÓN DE FORMULARIOS ━━━━━━━━━━━━━━━━━━━━━━━━
+    formularios: {
+        formatoFolio: {
+            apoyo_academico: 'AAC',
+            aval_institucional: 'AVI',
+            apoyo_terceros: 'TER',
+            comite_tutorial: 'CMT',
+            solicitud_libre: 'LIB'
         }
+    },
+
+    // ━━━ VERSIÓN ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+    version: {
+        numero: '2.0',
+        fecha: 'Febrero 2026',
+        nombre: 'Sistema CITRO Google',
+        plataforma: 'Google Workspace'
+    }
 };
 
 // ━━━ VALIDACIÓN ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
@@ -147,7 +142,7 @@ const CONFIG = {
         errores.push('⚠️ Falta configurar Spreadsheet ID');
     }
 
-    if (CONFIG.drive.rootFolderId.includes('TU_FOLDER')) {
+    if (CONFIG.drive.rootFolderId.includes('TU_FOLDER') || CONFIG.drive.rootFolderId.includes('PONER_FOLDER')) {
         errores.push('⚠️ Falta configurar carpeta raíz de Drive');
     }
 
@@ -157,7 +152,9 @@ const CONFIG = {
         console.log('📖 Lee GUIA-INSTALACION-GOOGLE.md');
     } else if (CONFIG.options.debug) {
         console.log('✅ Configuración Google validada');
+        console.log('🔐 Client ID:', CONFIG.google.clientId.substring(0, 20) + '...');
         console.log('📊 Spreadsheet:', CONFIG.sheets.spreadsheetId);
         console.log('📁 Drive Folder:', CONFIG.drive.rootFolderId);
+        console.log('👥 Admins:', CONFIG.admins.length);
     }
 })();
