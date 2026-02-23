@@ -81,7 +81,7 @@ const CONFIG = {
 
     // ━━━ ADMINISTRADORES ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
     admins: [
-        'clopez@uv.mx',
+        'jcfaicus@gmail.com',
         'rmenchaca@uv.mx',
         'carlolopezo@uv.mx',
         'ctecnicocitro@uv.mx'
