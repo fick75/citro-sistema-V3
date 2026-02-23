@@ -27,7 +27,7 @@ const CONFIG = {
 
     // ━━━ GOOGLE SHEETS (BASE DE DATOS) ━━━━━━━━━━━━━━━━━━━━━━━
     sheets: {
-        spreadsheetId: '1ZbGK8Nfzp4UTtEyyvlXpYiRfVWxVBTNZvxJw9HMpVMA', // ID limpio
+        spreadsheetId: '1ZbGK8Nfzp4UTtEyyvlXpYiRfVWxVBTNZvxJw9HMpVMA',
         sheetName: 'Solicitudes',
         columns: [
             'Folio', 'Fecha', 'Tipo', 'Nombre', 'Email', 'Matricula',
@@ -76,8 +76,8 @@ const CONFIG = {
 
     // ━━━ OPCIONES DE SEGURIDAD Y VALIDACIÓN ━━━━━━━━━━━━━━━━━━
     options: {
-        soloEmailUV: false,
-        dominioPermitido: 'uv.mx', // Cambiar a gmail.com si haces pruebas personales
+        soloEmailUV: false, // ⚠️ IMPORTANTE: Está en false para que te deje entrar ahorita con @gmail.com
+        dominioPermitido: 'uv.mx',
         plazoMinimoDias: 21,
         montoMaximo: 100000,
         requiereJustificacionSi: 50000,
@@ -104,23 +104,29 @@ const CONFIG = {
     }
 };
 
-// ━━━ HELPER PARA ADMINS ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-function isAdmin(email) {
-    if (!email) return false;
-    return CONFIG.admins.includes(email.toLowerCase().trim());
-}
-// ━━━ HELPER PARA ADMINS ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+// ════════════════════════════════════════════════════════════════
+// FUNCIONES GLOBALES (HELPERS) - ¡Aquí estaban faltando!
+// ════════════════════════════════════════════════════════════════
+
+/**
+ * Verifica si un correo es administrador
+ */
 function isAdmin(email) {
     if (!email) return false;
     return CONFIG.admins.includes(email.toLowerCase().trim());
 }
 
-// ━━━ HELPER PARA VALIDAR DOMINIO UV ━━━━━━━━━━━━━━━━━━━━━━━━━
+/**
+ * Verifica si un correo pertenece al dominio permitido
+ */
 function isUVEmail(email) {
-    if (!CONFIG.options.soloEmailUV) return true;
+    if (!CONFIG.options.soloEmailUV) return true; // Si está apagado, deja pasar cualquier correo
     return email.toLowerCase().endsWith(`@${CONFIG.options.dominioPermitido}`);
 }
-// ━━━ VALIDACIÓN ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+// ════════════════════════════════════════════════════════════════
+// VALIDACIÓN INICIAL
+// ════════════════════════════════════════════════════════════════
 (function validarConfig() {
     const errores = [];
     if (CONFIG.google.clientId.includes('TU_CLIENT_ID')) errores.push('⚠️ Falta configurar Google Client ID');
@@ -131,6 +137,6 @@ function isUVEmail(email) {
         console.error('❌ ERRORES DE CONFIGURACIÓN:');
         errores.forEach(e => console.error(e));
     } else if (CONFIG.options.debug) {
-        console.log('✅ Configuración Google validada');
+        console.log('✅ Configuración Google validada con éxito.');
     }
 })();
