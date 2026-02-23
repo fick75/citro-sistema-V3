@@ -136,7 +136,7 @@ const CONFIG = {
 function isAdmin(email) {
     return CONFIG.admins.includes(email.toLowerCase());
 }
-
+userState.isAdmin = isAdmin(userState.profile.email);
 function isUVEmail(email) {
     if (!CONFIG.options.soloEmailUV) return true;
     return email.toLowerCase().endsWith(`@${CONFIG.options.dominioPermitido}`);
