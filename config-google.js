@@ -58,7 +58,7 @@ const CONFIG = {
     admins: [
         'citroct7@gmail.com',
         'jcfaicus@gmail.com'
-    ],
+    ];
 
     // ━━━ INFORMACIÓN INSTITUCIONAL ━━━━━━━━━━━━━━━━━━━━━━━━━━━
     institucion: {
