@@ -11,7 +11,7 @@ const CONFIG = {
     // ━━━ GOOGLE OAUTH 2.0 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
     google: {
         clientId: '147189238289-c2du7shhgvrd1de9koq17gjb6p2e4bvj.apps.googleusercontent.com',
-        // ↑ CORREGIDO: Client ID real de Google Cloud Console
+        // ↑ Client ID real de Google Cloud Console
         
         scopes: [
             'https://www.googleapis.com/auth/userinfo.email',
@@ -33,36 +33,17 @@ const CONFIG = {
     // ━━━ GOOGLE SHEETS (BASE DE DATOS) ━━━━━━━━━━━━━━━━━━━━━━━
     sheets: {
         spreadsheetId: '1ZbGK8Nfzp4UTtEyyvlXpYiRfVWxVBTNZvxJw9HMpVMA',
-        // ↑ CORREGIDO: Solo el ID, sin /edit ni #gid
-        
         sheetName: 'Solicitudes',
-
         columns: [
-            'Folio',              // A
-            'Fecha',              // B
-            'Tipo',               // C
-            'Nombre',             // D
-            'Email',              // E
-            'Matricula',          // F
-            'Monto',              // G
-            'Estado',             // H
-            'PDF_URL',            // I
-            'PDF_ID',             // J
-            'Datos_JSON',         // K
-            'Notas_CT',           // L
-            'Usuario_Google',     // M
-            'Timestamp'           // N
+            'Folio', 'Fecha', 'Tipo', 'Nombre', 'Email', 'Matricula',
+            'Monto', 'Estado', 'PDF_URL', 'PDF_ID', 'Datos_JSON',
+            'Notas_CT', 'Usuario_Google', 'Timestamp'
         ]
     },
 
     // ━━━ GOOGLE DRIVE (ALMACENAMIENTO) ━━━━━━━━━━━━━━━━━━━━━━━
     drive: {
-        // ⚠️ IMPORTANTE: Obtener el ID correcto de Google Drive
-        // Abrir la carpeta en Drive y copiar el ID de la URL
         rootFolderId: 'PONER_FOLDER_ID_AQUI',
-        // Ejemplo: https://drive.google.com/drive/folders/1dyUEebJ...
-        //                                              ↑ Copiar este ID
-        
         folders: {
             apoyo_academico: '01_Apoyo_Academico',
             aval_institucional: '02_Aval_Institucional',
@@ -70,7 +51,6 @@ const CONFIG = {
             comite_tutorial: '04_Comite_Tutorial',
             solicitud_libre: '05_Solicitud_Libre'
         },
-
         folderIds: {}
     },
 
@@ -79,7 +59,6 @@ const CONFIG = {
         'citroct7@gmail.com',
         'jcfaicus@gmail.com'
     ],
-    // ↑ CORREGIDO: Quitado "cx", cerrado el array correctamente
 
     // ━━━ INFORMACIÓN INSTITUCIONAL ━━━━━━━━━━━━━━━━━━━━━━━━━━━
     institucion: {
@@ -102,8 +81,8 @@ const CONFIG = {
 
     // ━━━ OPCIONES DE SEGURIDAD Y VALIDACIÓN ━━━━━━━━━━━━━━━━━━
     options: {
-        soloEmailUV: false,  // false = permite cualquier Google
-        dominioPermitido: '',  // Vacío = sin restricción
+        soloEmailUV: true,
+        dominioPermitido: 'gmail.com',
         plazoMinimoDias: 21,
         montoMaximo: 100000,
         requiereJustificacionSi: 50000,
@@ -133,28 +112,32 @@ const CONFIG = {
 // ━━━ VALIDACIÓN ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 (function validarConfig() {
     const errores = [];
-
     if (CONFIG.google.clientId.includes('TU_CLIENT_ID')) {
         errores.push('⚠️ Falta configurar Google Client ID');
     }
-
     if (CONFIG.sheets.spreadsheetId.includes('TU_SPREADSHEET')) {
         errores.push('⚠️ Falta configurar Spreadsheet ID');
     }
-
     if (CONFIG.drive.rootFolderId.includes('TU_FOLDER') || CONFIG.drive.rootFolderId.includes('PONER_FOLDER')) {
         errores.push('⚠️ Falta configurar carpeta raíz de Drive');
     }
-
     if (errores.length > 0) {
         console.error('❌ ERRORES DE CONFIGURACIÓN:');
         errores.forEach(e => console.error(e));
-        console.log('📖 Lee GUIA-INSTALACION-GOOGLE.md');
     } else if (CONFIG.options.debug) {
         console.log('✅ Configuración Google validada');
         console.log('🔐 Client ID:', CONFIG.google.clientId.substring(0, 20) + '...');
         console.log('📊 Spreadsheet:', CONFIG.sheets.spreadsheetId);
-        console.log('📁 Drive Folder:', CONFIG.drive.rootFolderId);
-        console.log('👥 Admins:', CONFIG.admins.length);
+        console.log('🔒 Solo @gmail.com:', CONFIG.options.soloEmailUV);
     }
 })();
+
+// ━━━ HELPER FUNCTIONS ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+function isAdmin(email) {
+    return CONFIG.admins.includes(email.toLowerCase());
+}
+
+function isUVEmail(email) {
+    if (!CONFIG.options.soloEmailUV) return true;
+    return email.toLowerCase().endsWith(`@${CONFIG.options.dominioPermitido}`);
+}
